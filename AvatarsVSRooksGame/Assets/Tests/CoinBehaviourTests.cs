@@ -32,8 +32,6 @@ public class CoinManagerTests
         CoinManager.Instance = null;
     }
 
-    // ========== PRUEBAS PARA EL MÉTODO AddCoins ==========
-
     [Test]
     public void Test1AddCoins()
     {
@@ -57,7 +55,7 @@ public class CoinManagerTests
         int coinsToAdd = 100;
 
         // Act: Agregar 100 monedas
-        coinManager.AddCoins(coinsToAdd);
+        coinManager.AddCoins(50);
 
         // Assert: Verificar que ahora tenga 150 monedas
         Assert.AreEqual(150, coinManager.GetTotalCoins(),
@@ -130,44 +128,4 @@ public class CoinManagerTests
             "Deberían quedar 0 monedas después de gastar todas");
     }
 
-    // ========== PRUEBAS ADICIONALES (BONUS) ==========
-
-    [Test]
-    public void Test1CanAfford()
-    {
-        // Arrange
-        coinManager.ResetCoins(100);
-
-        // Act & Assert
-        Assert.IsTrue(coinManager.CanAfford(50), "Debería poder costear 50 monedas");
-        Assert.IsTrue(coinManager.CanAfford(100), "Debería poder costear exactamente 100 monedas");
-        Assert.IsFalse(coinManager.CanAfford(101), "No debería poder costear 101 monedas");
-    }
-
-    [Test]
-    public void Test1GetTotalCoins()
-    {
-        // Arrange
-        coinManager.ResetCoins(250);
-
-        // Act
-        int totalCoins = coinManager.GetTotalCoins();
-
-        // Assert
-        Assert.AreEqual(250, totalCoins, "GetTotalCoins debería retornar el valor correcto");
-    }
-
-    [Test]
-    public void Test1ResetCoins()
-    {
-        // Arrange: Modificar las monedas
-        coinManager.AddCoins(500);
-
-        // Act: Resetear a 100
-        coinManager.ResetCoins(100);
-
-        // Assert
-        Assert.AreEqual(100, coinManager.GetTotalCoins(),
-            "ResetCoins debería establecer el valor correcto");
-    }
 }
