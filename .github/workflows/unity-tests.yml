@@ -65,7 +65,7 @@ jobs:
       - name: Buscar archivos de test
         run: |
           echo "Buscando archivos de test..."
-          find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" -type f
+          find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*CoinBehaviourTests.cs" -type f
           echo ""
       
       - name: Contar métodos de test
