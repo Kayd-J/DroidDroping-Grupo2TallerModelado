@@ -31,7 +31,8 @@ public class CoinManagerTests
         }
         CoinManager.Instance = null;
     }
-
+    
+    [Test]
     public void Test1AddCoins()
     {
         // Arrange: Comenzar con 100 monedas
