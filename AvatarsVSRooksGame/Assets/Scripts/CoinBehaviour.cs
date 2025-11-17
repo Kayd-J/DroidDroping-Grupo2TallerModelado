@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class CoinBehavior : MonoBehaviour, IPointerClickHandler
+public class CoinBehaviour : MonoBehaviour, IPointerClickHandler
 {
     [Header("Valores de Monedas")]
     [SerializeField] private int coinValue = 25; // 25, 50 o 100

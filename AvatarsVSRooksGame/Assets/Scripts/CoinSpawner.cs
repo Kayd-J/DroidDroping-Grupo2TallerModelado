@@ -87,10 +87,10 @@ public class CoinSpawner : MonoBehaviour
         coin.transform.localPosition = new Vector3(0, 0, -1);
         
         // Configurar el comportamiento de la moneda
-        CoinBehavior coinBehavior = coin.GetComponent<CoinBehavior>();
-        if (coinBehavior != null)
+        CoinBehaviour coinBehaviour = coin.GetComponent<CoinBehaviour>();
+        if (coinBehaviour != null)
         {
-            coinBehavior.SetContainer(selectedContainer, this);
+            coinBehaviour.SetContainer(selectedContainer, this);
         }
         else
         {
