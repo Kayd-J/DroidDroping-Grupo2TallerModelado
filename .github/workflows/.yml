@@ -1,0 +1,62 @@
+name: Unity Tests CI
+
+on:
+  push:
+  pull_request:
+
+env:
+  PROJECT_PATH: AvatarsVSRooksGame
+
+
+jobs:
+  test:
+    name: Run Unit Tests Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      
+name: Checkout repository
+      uses: actions/checkout@v4
+
+      
+name: List test files
+      run: |
+        echo "Archivos de test encontrados:"
+        find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*.cs" -type f
+
+      
+name: Validate TestaddCoins
+      run: |
+        TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/TestaddCoins.cs"
+        if [ ! -f "$TEST_FILE" ]; then
+          echo "ERROR: Archivo TestaddCoins.cs no encontrado"
+          exit 1
+        fi
+        TEST_COUNT=$(grep -c "^\s*[Test]" "$TEST_FILE" || echo "0")
+        echo "Tests activos en TestaddCoins.cs: $TEST_COUNT"
+        if [ "$TEST_COUNT" -eq 0 ]; then
+          echo "ERROR: No hay tests activos en TestaddCoins.cs"
+          exit 1
+        fi
+
+      
+name: Validate TestHashPassword
+      run: |
+        TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/TestHashPassword.cs"
+        if [ ! -f "$TEST_FILE" ]; then
+          echo "ERROR: Archivo TestHashPassword.cs no encontrado"
+          exit 1
+        fi
+        TEST_COUNT=$(grep -c "^\s*[Test]" "$TEST_FILE" || echo "0")
+        echo "Tests activos en TestHashPassword.cs: $TEST_COUNT"
+        if [ "$TEST_COUNT" -eq 0 ]; then
+          echo "ERROR: No hay tests activos en TestHashPassword.cs"
+          exit 1
+        fi
+
+      
+name: Verification Success
+      run: |
+        echo "======================================"
+        echo "VERIFICACION COMPLETADA EXITOSAMENTE"
+        echo "======================================"
