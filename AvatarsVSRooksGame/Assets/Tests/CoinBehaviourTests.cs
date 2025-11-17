@@ -112,7 +112,7 @@ public class CoinManagerTests
             "Las monedas no deberían cambiar cuando no hay suficientes");
     }
 
-   //[Test]
+   // [Test]
     public void Test3SpendCoins()
     {
         // Arrange: Comenzar con exactamente 100 monedas

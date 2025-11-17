@@ -44,52 +44,76 @@ jobs:
           echo "Archivos de test encontrados:"
           find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" -type f
       
-      - name: Contar y validar tests
+      - name: Contar y validar tests en CoinManagerTests
         run: |
-          echo "Contando tests..."
-          TEST_COUNT=$(grep -r "\[Test\]" ${{ env.PROJECT_PATH }}/Assets/Tests/ | wc -l)
-          echo "Total de metodos de test encontrados: $TEST_COUNT"
+          echo "==================================="
+          echo "VALIDACION DE TESTS"
+          echo "==================================="
+          echo ""
+          
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinManagerTests.cs"
+          
+          if [ ! -f "$TEST_FILE" ]; then
+            echo "ERROR: Archivo CoinManagerTests.cs no encontrado"
+            exit 1
+          fi
+          
+          echo "Archivo encontrado: $TEST_FILE"
+          echo ""
+          
+          TEST_COUNT=$(grep -c "^\s*\[Test\]" "$TEST_FILE" || echo "0")
+          echo "Total de tests activos encontrados: $TEST_COUNT"
+          echo ""
           
           EXPECTED_TESTS=6
-          
-          if [ $TEST_COUNT -eq 0 ]; then
-            echo "ERROR: No se encontraron metodos de test"
-            exit 1
-          fi
-          
-          if [ $TEST_COUNT -ne $EXPECTED_TESTS ]; then
-            echo "ERROR: Se esperaban $EXPECTED_TESTS tests pero se encontraron $TEST_COUNT"
-            echo "Algun test fue modificado o eliminado"
-            exit 1
-          fi
-          
-          echo "OK: Numero correcto de tests ($TEST_COUNT)"
+          echo "Tests esperados: $EXPECTED_TESTS"
           echo ""
-          echo "Lista de tests:"
-          grep -rn "\[Test\]" ${{ env.PROJECT_PATH }}/Assets/Tests/ | grep -A1 "\[Test\]"
+          
+          if [ "$TEST_COUNT" -eq 0 ]; then
+            echo "ERROR: No se encontraron tests activos"
+            echo "Todos los [Test] estan comentados"
+            exit 1
+          fi
+          
+          if [ "$TEST_COUNT" -ne "$EXPECTED_TESTS" ]; then
+            echo "ERROR: Numero de tests incorrecto"
+            echo "  Esperados: $EXPECTED_TESTS"
+            echo "  Encontrados: $TEST_COUNT"
+            echo "  Diferencia: $(($EXPECTED_TESTS - $TEST_COUNT)) tests faltantes"
+            echo ""
+            echo "Algun test fue comentado o eliminado"
+            exit 1
+          fi
+          
+          echo "EXITO: Numero correcto de tests ($TEST_COUNT)"
+          echo ""
+          echo "Tests encontrados:"
+          grep -n "^\s*\[Test\]" "$TEST_FILE" || true
       
-      - name: Verificar estructura de tests
+      - name: Verificar metodos de test
         run: |
-          echo "Verificando estructura de las clases de test..."
-          for file in ${{ env.PROJECT_PATH }}/Assets/Tests/*Tests.cs; do
-            if [ -f "$file" ]; then
-              echo "--- $(basename $file) ---"
-              echo "Clases encontradas:"
-              grep "class.*Tests" "$file" || echo "No se encontro clase de test"
-              echo ""
-              echo "Metodos de test:"
-              grep -E "void Test[0-9]" "$file" | wc -l
-              echo ""
-            fi
-          done
+          echo "Verificando metodos de test..."
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinManagerTests.cs"
+          
+          echo "Metodos Test encontrados:"
+          grep -E "void Test[0-9]" "$TEST_FILE" || echo "Ninguno"
+          
+          COMMENTED_TESTS=$(grep -c "//\s*\[Test\]" "$TEST_FILE" || echo "0")
+          echo ""
+          echo "Tests comentados detectados: $COMMENTED_TESTS"
+          
+          if [ "$COMMENTED_TESTS" -gt 0 ]; then
+            echo "ADVERTENCIA: Hay tests comentados que no se estan ejecutando"
+          fi
       
       - name: Tests Verification Success
         run: |
           echo "======================================"
-          echo "VERIFICACION DE TESTS COMPLETADA"
+          echo "VERIFICACION COMPLETADA EXITOSAMENTE"
           echo "======================================"
           echo ""
-          TEST_COUNT=$(grep -r "\[Test\]" ${{ env.PROJECT_PATH }}/Assets/Tests/ | wc -l)
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinManagerTests.cs"
+          TEST_COUNT=$(grep -c "^\s*\[Test\]" "$TEST_FILE" || echo "0")
           echo "Total de tests validados: $TEST_COUNT"
           echo ""
-          echo "Todos los tests estructuralmente correctos"
+          echo "Todos los tests estan correctamente configurados"
