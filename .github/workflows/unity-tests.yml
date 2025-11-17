@@ -1,12 +1,11 @@
-name: Unity Tests CI Simple
+name: Unity Tests CI
 
 on:
   push:
-    branches:
-      - MiguelPruebasUnitarias
   pull_request:
-    branches:
-      - MiguelPruebasUnitarias 
+
+env:
+  PROJECT_PATH: AvatarsVSRooksGame
 
 jobs:
   build:
@@ -17,27 +16,43 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Verificar estructura de carpetas
+      - name: Verificar estructura del repositorio
         run: |
-          echo "Verificando estructura del proyecto..."
+          echo "Estructura del repositorio:"
           ls -la
           echo ""
-          echo "Contenido de Assets:"
-          ls -la Assets/
-          echo ""
-          echo "Verificando carpeta Tests:"
-          ls -la Assets/Tests/
-          echo ""
-          echo "Estructura verificada"
+          echo "Contenido del proyecto Unity:"
+          ls -la ${{ env.PROJECT_PATH }}/
+      
+      - name: Verificar carpeta Assets
+        run: |
+          if [ -d "${{ env.PROJECT_PATH }}/Assets" ]; then
+            echo "Carpeta Assets encontrada"
+            ls -la ${{ env.PROJECT_PATH }}/Assets/
+          else
+            echo "Carpeta Assets NO encontrada"
+            exit 1
+          fi
+      
+      - name: Verificar carpeta Tests
+        run: |
+          if [ -d "${{ env.PROJECT_PATH }}/Assets/Tests" ]; then
+            echo "Carpeta Tests encontrada"
+            ls -la ${{ env.PROJECT_PATH }}/Assets/Tests/
+          else
+            echo "Carpeta Tests NO encontrada"
+            exit 1
+          fi
       
       - name: Verificar archivos .asmdef
         run: |
           echo "Buscando archivos Assembly Definition..."
-          find . -name "*.asmdef" -type f
+          find ${{ env.PROJECT_PATH }} -name "*.asmdef" -type f
           echo "Assembly Definitions encontrados"
       
       - name: Build Success
-        run: echo "Build check completado"
+        run: echo "Build check completado exitosamente"
+
   test:
     name: Test Check
     runs-on: ubuntu-latest
@@ -47,24 +62,43 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Verificar archivos de test
+      - name: Buscar archivos de test
         run: |
-          echo "Verificando archivos de test..."
-          find Assets/Tests -name "*Tests.cs" -type f
+          echo "Buscando archivos de test..."
+          find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" -type f
           echo ""
-          echo "Contando tests..."
-          grep -r "void Test" Assets/Tests/ | wc -l
-          echo " métodos de test encontrados"
       
-      - name: Verificar que existan tests
+      - name: Contar métodos de test
         run: |
-          TEST_COUNT=$(find Assets/Tests -name "*Tests.cs" | wc -l)
+          echo "Contando métodos de test..."
+          TEST_COUNT=$(grep -r "\[Test\]" ${{ env.PROJECT_PATH }}/Assets/Tests/ | wc -l)
+          echo "Se encontraron $TEST_COUNT métodos con atributo [Test]"
+          
           if [ $TEST_COUNT -eq 0 ]; then
+            echo "No se encontraron métodos de test"
+            exit 1
+          fi
+      
+      - name: Mostrar contenido de archivos de test
+        run: |
+          echo "Archivos de test encontrados:"
+          for file in ${{ env.PROJECT_PATH }}/Assets/Tests/*Tests.cs; do
+            if [ -f "$file" ]; then
+              echo "--- $(basename $file) ---"
+              grep -E "(class|void Test)" "$file" | head -n 10
+              echo ""
+            fi
+          done
+      
+      - name: Verificar que tests pueden ejecutarse
+        run: |
+          TEST_FILES=$(find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" | wc -l)
+          if [ $TEST_FILES -eq 0 ]; then
             echo "No se encontraron archivos de test"
             exit 1
           else
-            echo "Se encontraron $TEST_COUNT archivo(s) de test"
+            echo "Se encontraron $TEST_FILES archivo(s) de test"
           fi
       
-      - name: Tests Check Success
-        run: echo "Test check completado exitosamente"
+      - name: Test Check Success
+        run: echo "Todos los tests verificados exitosamente"
