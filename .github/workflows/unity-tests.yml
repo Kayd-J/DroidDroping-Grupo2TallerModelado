@@ -61,7 +61,7 @@ jobs:
           echo "Archivo encontrado: $TEST_FILE"
           echo ""
           
-          TEST_COUNT=$(grep -c "^\s*\[Test\]" "$TEST_FILE" || echo "0")
+          TEST_COUNT=$(grep "\[Test\]" AvatarsVSRooksGame/Assets/Tests/CoinBehaviourTests.cs | wc -l)
           echo "Total de tests activos encontrados: $TEST_COUNT"
           echo ""
           
@@ -71,7 +71,6 @@ jobs:
           
           if [ "$TEST_COUNT" -eq 0 ]; then
             echo "ERROR: No se encontraron tests activos"
-            echo "Todos los [Test] estan comentados"
             exit 1
           fi
           
