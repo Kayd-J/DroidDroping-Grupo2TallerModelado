@@ -44,17 +44,17 @@ jobs:
           echo "Archivos de test encontrados:"
           find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" -type f
       
-      - name: Contar y validar tests en CoinManagerTests
+      - name: Contar y validar tests en CoinBehaviourTests
         run: |
           echo "==================================="
           echo "VALIDACION DE TESTS"
           echo "==================================="
           echo ""
           
-          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinManagerTests.cs"
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinBehaviourTests.cs"
           
           if [ ! -f "$TEST_FILE" ]; then
-            echo "ERROR: Archivo CoinManagerTests.cs no encontrado"
+            echo "ERROR: Archivo CoinBehaviourTests.cs no encontrado"
             exit 1
           fi
           
@@ -93,7 +93,7 @@ jobs:
       - name: Verificar metodos de test
         run: |
           echo "Verificando metodos de test..."
-          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinManagerTests.cs"
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinBehaviourTests.cs"
           
           echo "Metodos Test encontrados:"
           grep -E "void Test[0-9]" "$TEST_FILE" || echo "Ninguno"
@@ -112,7 +112,7 @@ jobs:
           echo "VERIFICACION COMPLETADA EXITOSAMENTE"
           echo "======================================"
           echo ""
-          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinManagerTests.cs"
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/CoinBehaviourTests.cs"
           TEST_COUNT=$(grep -c "^\s*\[Test\]" "$TEST_FILE" || echo "0")
           echo "Total de tests validados: $TEST_COUNT"
           echo ""
