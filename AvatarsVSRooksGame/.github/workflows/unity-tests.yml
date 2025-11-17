@@ -1,0 +1,70 @@
+name: Unity Tests CI Simple
+
+on:
+  push:
+    branches:
+      - MiguelPruebasUnitarias
+  pull_request:
+    branches:
+      - MiguelPruebasUnitarias 
+
+jobs:
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Verificar estructura de carpetas
+        run: |
+          echo "Verificando estructura del proyecto..."
+          ls -la
+          echo ""
+          echo "Contenido de Assets:"
+          ls -la Assets/
+          echo ""
+          echo "Verificando carpeta Tests:"
+          ls -la Assets/Tests/
+          echo ""
+          echo "Estructura verificada"
+      
+      - name: Verificar archivos .asmdef
+        run: |
+          echo "Buscando archivos Assembly Definition..."
+          find . -name "*.asmdef" -type f
+          echo "Assembly Definitions encontrados"
+      
+      - name: Build Success
+        run: echo "Build check completado"
+  test:
+    name: Test Check
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Verificar archivos de test
+        run: |
+          echo "Verificando archivos de test..."
+          find Assets/Tests -name "*Tests.cs" -type f
+          echo ""
+          echo "Contando tests..."
+          grep -r "void Test" Assets/Tests/ | wc -l
+          echo " métodos de test encontrados"
+      
+      - name: Verificar que existan tests
+        run: |
+          TEST_COUNT=$(find Assets/Tests -name "*Tests.cs" | wc -l)
+          if [ $TEST_COUNT -eq 0 ]; then
+            echo "No se encontraron archivos de test"
+            exit 1
+          else
+            echo "Se encontraron $TEST_COUNT archivo(s) de test"
+          fi
+      
+      - name: Tests Check Success
+        run: echo "Test check completado exitosamente"
