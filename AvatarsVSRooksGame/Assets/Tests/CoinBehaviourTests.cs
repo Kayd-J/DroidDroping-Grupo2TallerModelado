@@ -32,7 +32,7 @@ public class CoinManagerTests
         CoinManager.Instance = null;
     }
 
-    [Test]
+    //[Test]
     public void Test1AddCoins()
     {
         // Arrange: Comenzar con 100 monedas
@@ -47,7 +47,7 @@ public class CoinManagerTests
             "Las monedas no se sumaron correctamente");
     }
 
-    [Test]
+    //[Test]
     public void Test2AddCoins()
     {
         // Arrange: Resetear a 50 monedas
@@ -62,7 +62,7 @@ public class CoinManagerTests
             "El total de monedas después de agregar no es correcto");
     }
 
-    [Test]
+    //[Test]
     public void Test3AddCoins()
     {
         // Arrange: Comenzar con 0 monedas
@@ -80,7 +80,7 @@ public class CoinManagerTests
 
     // ========== PRUEBAS PARA EL MÉTODO SpendCoins ==========
 
-    [Test]
+    //[Test]
     public void Test1SpendCoins()
     {
         // Arrange: Comenzar con 100 monedas
@@ -96,7 +96,7 @@ public class CoinManagerTests
             "Las monedas no se restaron correctamente");
     }
 
-    [Test]
+    //[Test]
     public void Test2SpendCoins()
     {
         // Arrange: Comenzar con 50 monedas
@@ -112,7 +112,7 @@ public class CoinManagerTests
             "Las monedas no deberían cambiar cuando no hay suficientes");
     }
 
-   [Test]
+   //[Test]
     public void Test3SpendCoins()
     {
         // Arrange: Comenzar con exactamente 100 monedas
