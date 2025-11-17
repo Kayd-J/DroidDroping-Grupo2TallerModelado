@@ -2,14 +2,11 @@ name: Unity Tests CI
 
 on:
   push:
-    branches:
-      - JosuePruebasUnitarias
   pull_request:
-    branches:
-      - JosuePruebasUnitarias
 
 env:
-  PROJECT_PATH: .   # si tus tests están en Assets/Tests dentro de la raíz
+  PROJECT_PATH: AvatarsVSRooksGame
+
 
 jobs:
   test:
@@ -25,16 +22,36 @@ jobs:
           echo "Archivos de test encontrados:"
           find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*.cs" -type f
 
-      - name: Validate tests
+      - name: Validate Test1SpendCoins
         run: |
-          EXPECTED_TESTS=2
-          TEST_FILES=$(find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" -type f | wc -l)
-          echo "Tests esperados: $EXPECTED_TESTS"
-          echo "Tests encontrados: $TEST_FILES"
-
-          if [ "$TEST_FILES" -ne "$EXPECTED_TESTS" ]; then
-            echo "ERROR: Numero de tests incorrecto"
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/Test1SpendCoins.cs"
+          if [ ! -f "$TEST_FILE" ]; then
+            echo "ERROR: Archivo Test1SpendCoins.cs no encontrado"
+            exit 1
+          fi
+          TEST_COUNT=$(grep -c "^\s*\[Test\]" "$TEST_FILE" || echo "0")
+          echo "Tests activos en Test1SpendCoins.cs: $TEST_COUNT"
+          if [ "$TEST_COUNT" -eq 0 ]; then
+            echo "ERROR: No hay tests activos en Test1SpendCoins.cs"
             exit 1
           fi
 
-          echo "Todos los tests encontrados correctamente"
+      - name: Validate Test2CanAfford
+        run: |
+          TEST_FILE="${{ env.PROJECT_PATH }}/Assets/Tests/Test2CanAfford.cs"
+          if [ ! -f "$TEST_FILE" ]; then
+            echo "ERROR: Archivo Test2CanAfford.cs no encontrado"
+            exit 1
+          fi
+          TEST_COUNT=$(grep -c "^\s*\[Test\]" "$TEST_FILE" || echo "0")
+          echo "Tests activos en Test2CanAfford.cs: $TEST_COUNT"
+          if [ "$TEST_COUNT" -eq 0 ]; then
+            echo "ERROR: No hay tests activos en Test2CanAfford.cs"
+            exit 1
+          fi
+
+      - name: Verification Success
+        run: |
+          echo "======================================"
+          echo "VERIFICACION COMPLETADA EXITOSAMENTE"
+          echo "======================================"
