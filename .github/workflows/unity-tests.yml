@@ -39,25 +39,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Instalar Mono (para compilar C#)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mono-complete
-      
       - name: Verificar archivos de test
         run: |
           echo "Archivos de test encontrados:"
           find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" -type f
-      
-      - name: Compilar archivos de test
-        run: |
-          echo "Intentando compilar archivos de test..."
-          for file in ${{ env.PROJECT_PATH }}/Assets/Tests/*Tests.cs; do
-            if [ -f "$file" ]; then
-              echo "Verificando sintaxis de: $(basename $file)"
-              mcs -target:library "$file" 2>&1 | head -n 20 || echo "ADVERTENCIA: El archivo tiene dependencias de Unity, pero la sintaxis basica esta OK"
-            fi
-          done
       
       - name: Contar y validar tests
         run: |
@@ -65,11 +50,20 @@ jobs:
           TEST_COUNT=$(grep -r "\[Test\]" ${{ env.PROJECT_PATH }}/Assets/Tests/ | wc -l)
           echo "Total de metodos de test encontrados: $TEST_COUNT"
           
+          EXPECTED_TESTS=6
+          
           if [ $TEST_COUNT -eq 0 ]; then
             echo "ERROR: No se encontraron metodos de test"
             exit 1
           fi
           
+          if [ $TEST_COUNT -ne $EXPECTED_TESTS ]; then
+            echo "ERROR: Se esperaban $EXPECTED_TESTS tests pero se encontraron $TEST_COUNT"
+            echo "Algun test fue modificado o eliminado"
+            exit 1
+          fi
+          
+          echo "OK: Numero correcto de tests ($TEST_COUNT)"
           echo ""
           echo "Lista de tests:"
           grep -rn "\[Test\]" ${{ env.PROJECT_PATH }}/Assets/Tests/ | grep -A1 "\[Test\]"
@@ -94,10 +88,6 @@ jobs:
           echo "======================================"
           echo "VERIFICACION DE TESTS COMPLETADA"
           echo "======================================"
-          echo ""
-          echo "NOTA: Esta es una verificacion de estructura."
-          echo "Para ejecutar los tests realmente en Unity,"
-          echo "necesitas configurar UNITY_LICENSE en los secrets."
           echo ""
           TEST_COUNT=$(grep -r "\[Test\]" ${{ env.PROJECT_PATH }}/Assets/Tests/ | wc -l)
           echo "Total de tests validados: $TEST_COUNT"
