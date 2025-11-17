@@ -46,7 +46,7 @@ public class CoinManagerTests
             "Las monedas no se sumaron correctamente");
     }
 
-    
+    [Test]
     public void Test2AddCoins()
     {
         // Arrange: Resetear a 50 monedas
