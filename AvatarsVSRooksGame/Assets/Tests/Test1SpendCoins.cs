@@ -48,8 +48,8 @@ public class Test1SpendCoins
         cm.ResetCoins(50);
         bool result = cm.SpendCoins(50);
         Assert.IsTrue(result, "SpendCoins should succeed when spending exactly the available amount");
-        // Assert.AreEqual(0, cm.GetTotalCoins(), "Total coins should be 0 after spending the exact amount");
+        Assert.AreEqual(0, cm.GetTotalCoins(), "Total coins should be 0 after spending the exact amount");
         // Intentionally incorrect expectation to force a failing test
-        Assert.AreEqual(1, cm.GetTotalCoins(), "(INTENTIONAL) Total coins should be 1 after spending the exact amount");
+        // Assert.AreEqual(1, cm.GetTotalCoins(), "(INTENTIONAL) Total coins should be 1 after spending the exact amount");
     }
 }
