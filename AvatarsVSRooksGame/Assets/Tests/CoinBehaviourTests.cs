@@ -40,7 +40,7 @@ public class CoinManagerTests
         int coinsToAdd = 25;
 
         // Act: Agregar 25 monedas
-        coinManager.AddCoins(coinsToAdd);
+        coinManager.AddCoins(50);
 
         // Assert: Verificar que ahora tenga 125 monedas
         Assert.AreEqual(initialCoins + coinsToAdd, coinManager.GetTotalCoins(),
@@ -55,7 +55,7 @@ public class CoinManagerTests
         int coinsToAdd = 100;
 
         // Act: Agregar 100 monedas
-        coinManager.AddCoins(50);
+        coinManager.AddCoins(coinsToAdd);
 
         // Assert: Verificar que ahora tenga 150 monedas
         Assert.AreEqual(150, coinManager.GetTotalCoins(),
