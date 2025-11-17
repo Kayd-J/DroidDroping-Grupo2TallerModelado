@@ -4,6 +4,7 @@ on:
   push:
   pull_request:
 
+# Variable para la ruta del proyecto
 env:
   PROJECT_PATH: AvatarsVSRooksGame
 
@@ -30,7 +31,7 @@ jobs:
             echo "Carpeta Assets encontrada"
             ls -la ${{ env.PROJECT_PATH }}/Assets/
           else
-            echo "Carpeta Assets NO encontrada"
+            echo "ERROR: Carpeta Assets NO encontrada"
             exit 1
           fi
       
@@ -40,7 +41,7 @@ jobs:
             echo "Carpeta Tests encontrada"
             ls -la ${{ env.PROJECT_PATH }}/Assets/Tests/
           else
-            echo "Carpeta Tests NO encontrada"
+            echo "ERROR: Carpeta Tests NO encontrada"
             exit 1
           fi
       
@@ -65,7 +66,15 @@ jobs:
       - name: Buscar archivos de test
         run: |
           echo "Buscando archivos de test..."
-          find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*CoinBehaviourTests.cs" -type f
+          echo "Archivo principal: CoinBehaviourTests.cs"
+          if [ -f "${{ env.PROJECT_PATH }}/Assets/Tests/CoinBehaviourTests.cs" ]; then
+            echo "CoinBehaviourTests.cs encontrado"
+          else
+            echo "ADVERTENCIA: CoinBehaviourTests.cs NO encontrado"
+          fi
+          echo ""
+          echo "Todos los archivos *Tests.cs:"
+          find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" -type f
           echo ""
       
       - name: Contar métodos de test
@@ -75,7 +84,7 @@ jobs:
           echo "Se encontraron $TEST_COUNT métodos con atributo [Test]"
           
           if [ $TEST_COUNT -eq 0 ]; then
-            echo "No se encontraron métodos de test"
+            echo "ERROR: No se encontraron métodos de test"
             exit 1
           fi
       
@@ -94,7 +103,7 @@ jobs:
         run: |
           TEST_FILES=$(find ${{ env.PROJECT_PATH }}/Assets/Tests -name "*Tests.cs" | wc -l)
           if [ $TEST_FILES -eq 0 ]; then
-            echo "No se encontraron archivos de test"
+            echo "ERROR: No se encontraron archivos de test"
             exit 1
           else
             echo "Se encontraron $TEST_FILES archivo(s) de test"
